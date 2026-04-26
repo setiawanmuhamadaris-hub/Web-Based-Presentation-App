@@ -14,7 +14,8 @@ class MasterTutorialController extends Controller
             'Authorization' => 'Bearer ' . session('refresh_token'),
         ])->get('https://jwt-auth-eight-neon.vercel.app/getMakul');
 
-        return $response->successful() ? ($response->json() ?? []) : [];
+        // Tambahkan argumen 'data' pada metode json() untuk mengekstrak array mata kuliah
+        return $response->successful() ? ($response->json('data') ?? []) : [];
     }
 
     public function index()
@@ -34,7 +35,7 @@ class MasterTutorialController extends Controller
         $request->validate([
             'judul'            => 'required|string|max:255',
             'kode_matkul'      => 'required|string|max:255',
-            'url_presentation' => 'required|string|unique:master_tutorials,url_presentation',
+            'url_presentation' => 'required|string|max:255|unique:master_tutorials,url_presentation',
             'creator_email'    => 'required|email|max:255',
         ]);
 
@@ -66,7 +67,7 @@ class MasterTutorialController extends Controller
         $request->validate([
             'judul'            => 'required|string|max:255',
             'kode_matkul'      => 'required|string|max:255',
-            'url_presentation' => 'required|string|unique:master_tutorials,url_presentation,' . $tutorial->id,
+            'url_presentation' => 'required|string|max:255|unique:master_tutorials,url_presentation,' . $tutorial->id,
             'creator_email'    => 'required|email|max:255',
         ]);
 

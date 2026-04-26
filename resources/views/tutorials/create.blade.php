@@ -62,9 +62,9 @@
                                    {{ $errors->has('kode_matkul') ? 'border-red-400 bg-red-50' : 'border-slate-300' }}">
                         <option value="">-- Pilih Mata Kuliah --</option>
                         @foreach ($makulList as $makul)
-                            <option value="{{ $makul['kode'] ?? $makul }}"
-                                {{ old('kode_matkul') === ($makul['kode'] ?? $makul) ? 'selected' : '' }}>
-                                {{ $makul['nama'] ?? $makul }} ({{ $makul['kode'] ?? $makul }})
+                            <option value="{{ $makul['kdmk'] }}"
+                                {{ old('kode_matkul') == $makul['kdmk'] ? 'selected' : '' }}>
+                                {{ $makul['nama'] }} ({{ $makul['kdmk'] }})
                             </option>
                         @endforeach
                     </select>

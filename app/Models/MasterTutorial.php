@@ -1,26 +1,17 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
+namespace App\Models;
 
-return new class extends Migration
+use Illuminate\Database\Eloquent\Model;
+
+class MasterTutorial extends Model
 {
-    public function up(): void
-    {
-        Schema::create('master_tutorials', function (Blueprint $table) {
-            $table->id();
-            $table->string('judul');
-            $table->string('kode_matkul');
-            $table->string('url_presentation')->unique();
-            $table->string('url_finished')->unique();
-            $table->string('creator_email');
-            $table->timestamps();
-        });
-    }
+    protected $fillable = [
+        'judul', 'kode_matkul', 'url_presentation', 'url_finished', 'creator_email'
+    ];
 
-    public function down(): void
+    public function details()
     {
-        Schema::dropIfExists('master_tutorials');
+        return $this->hasMany(DetailTutorial::class);
     }
-};
+}
