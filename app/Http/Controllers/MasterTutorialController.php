@@ -2,60 +2,83 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreMasterTutorialRequest;
-use App\Http\Requests\UpdateMasterTutorialRequest;
 use App\Models\MasterTutorial;
-use App\Services\AuthService;
-use App\Services\MatkulService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class MasterTutorialController extends Controller
 {
-    public function __construct(
-        private readonly AuthService  $authService,
-        private readonly MatkulService $matkulService,
-    ) {}
+    private function fetchMakul(): array
+    {
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . session('refresh_token'),
+        ])->get('https://jwt-auth-eight-neon.vercel.app/getMakul');
+
+        return $response->successful() ? ($response->json() ?? []) : [];
+    }
 
     public function index()
     {
-        $tutorials = MasterTutorial::latest()->paginate(15);
+        $tutorials = MasterTutorial::latest()->paginate(10);
         return view('tutorials.index', compact('tutorials'));
     }
 
     public function create()
     {
-        $matkuls = $this->matkulService->getAll();
-        return view('tutorials.create', compact('matkuls'));
+        $makulList = $this->fetchMakul();
+        return view('tutorials.create', compact('makulList'));
     }
 
-    public function store(StoreMasterTutorialRequest $request)
+    public function store(Request $request)
     {
-        $data = $request->validated();
-        $data['creator_email'] = $this->authService->getUser()['email'] ?? '';
+        $request->validate([
+            'judul'            => 'required|string|max:255',
+            'kode_matkul'      => 'required|string|max:255',
+            'url_presentation' => 'required|string|unique:master_tutorials,url_presentation',
+            'creator_email'    => 'required|email|max:255',
+        ]);
 
-        MasterTutorial::create($data);
+        MasterTutorial::create([
+            'judul'            => $request->judul,
+            'kode_matkul'      => $request->kode_matkul,
+            'url_presentation' => $request->url_presentation,
+            'url_finished'     => $request->url_presentation,
+            'creator_email'    => $request->creator_email,
+        ]);
 
         return redirect()->route('tutorials.index')
-            ->with('success', 'Tutorial berhasil dibuat.');
+                         ->with('success', 'Tutorial berhasil ditambahkan.');
     }
 
     public function show(MasterTutorial $tutorial)
     {
-        $tutorial->load('details');
-        return view('tutorials.show', compact('tutorial'));
+        return redirect()->route('tutorials.index');
     }
 
     public function edit(MasterTutorial $tutorial)
     {
-        $matkuls = $this->matkulService->getAll();
-        return view('tutorials.edit', compact('tutorial', 'matkuls'));
+        $makulList = $this->fetchMakul();
+        return view('tutorials.edit', compact('tutorial', 'makulList'));
     }
 
-    public function update(UpdateMasterTutorialRequest $request, MasterTutorial $tutorial)
+    public function update(Request $request, MasterTutorial $tutorial)
     {
-        $tutorial->update($request->validated());
+        $request->validate([
+            'judul'            => 'required|string|max:255',
+            'kode_matkul'      => 'required|string|max:255',
+            'url_presentation' => 'required|string|unique:master_tutorials,url_presentation,' . $tutorial->id,
+            'creator_email'    => 'required|email|max:255',
+        ]);
 
-        return redirect()->route('tutorials.show', $tutorial)
-            ->with('success', 'Tutorial berhasil diperbarui.');
+        $tutorial->update([
+            'judul'            => $request->judul,
+            'kode_matkul'      => $request->kode_matkul,
+            'url_presentation' => $request->url_presentation,
+            'creator_email'    => $request->creator_email,
+        ]);
+
+        return redirect()->route('tutorials.index')
+                         ->with('success', 'Tutorial berhasil diperbarui.');
     }
 
     public function destroy(MasterTutorial $tutorial)
@@ -63,6 +86,6 @@ class MasterTutorialController extends Controller
         $tutorial->delete();
 
         return redirect()->route('tutorials.index')
-            ->with('success', 'Tutorial berhasil dihapus.');
+                         ->with('success', 'Tutorial berhasil dihapus.');
     }
 }
