@@ -49,10 +49,6 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-sm font-bold text-t_navy mb-1">URL Presentation</label>
-                    <input type="text" name="url_presentation" value="{{ old('url_presentation') }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-t_gold"/>
-                </div>
-                <div>
                     <label class="block text-sm font-bold text-t_navy mb-1">Creator Email</label>
                     <input type="email" name="creator_email" value="{{ old('creator_email') }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-t_gold"/>
                 </div>
@@ -65,3 +61,4 @@
     </div>
 </body>
 </html>
+

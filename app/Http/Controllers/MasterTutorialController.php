@@ -30,25 +30,22 @@ class MasterTutorialController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'judul'            => 'required|string|max:255',
-            'kode_matkul'      => 'required|string|max:255',
-            'url_presentation' => 'required|string|max:255|unique:master_tutorials,url_presentation',
-            'creator_email'    => 'required|email|max:255',
-        ]);
+{
+    $request->validate([
+        'judul'            => 'required|string|max:255',
+        'kode_matkul'      => 'required|string|max:255',
+        'creator_email'    => 'required|email|max:255',
+    ]);
 
-        MasterTutorial::create([
-            'judul'            => $request->judul,
-            'kode_matkul'      => $request->kode_matkul,
-            'url_presentation' => $request->url_presentation,
-            'url_finished'     => $request->url_presentation,
-            'creator_email'    => $request->creator_email,
-        ]);
+    MasterTutorial::create([
+        'judul'            => $request->judul,
+        'kode_matkul'      => $request->kode_matkul,
+        'creator_email'    => $request->creator_email,
+    ]);
 
-        return redirect()->route('tutorials.index')
-                         ->with('success', 'Tutorial berhasil ditambahkan.');
-    }
+    return redirect()->route('tutorials.index')
+                     ->with('success', 'Tutorial berhasil ditambahkan dengan URL otomatis.');
+}
 
     public function show(MasterTutorial $tutorial)
     {
@@ -62,24 +59,25 @@ class MasterTutorialController extends Controller
     }
 
     public function update(Request $request, MasterTutorial $tutorial)
-    {
-        $request->validate([
-            'judul'            => 'required|string|max:255',
-            'kode_matkul'      => 'required|string|max:255',
-            'url_presentation' => 'required|string|max:255|unique:master_tutorials,url_presentation,' . $tutorial->id,
-            'creator_email'    => 'required|email|max:255',
-        ]);
+{
+    // Hapus validasi manual untuk url_presentation
+    $request->validate([
+        'judul'            => 'required|string|max:255',
+        'kode_matkul'      => 'required|string|max:255',
+        'creator_email'    => 'required|email|max:255',
+    ]);
 
-        $tutorial->update([
-            'judul'            => $request->judul,
-            'kode_matkul'      => $request->kode_matkul,
-            'url_presentation' => $request->url_presentation,
-            'creator_email'    => $request->creator_email,
-        ]);
+    // Update data tanpa perlu mengurusi URL secara manual
+    $tutorial->update([
+        'judul'            => $request->judul,
+        'kode_matkul'      => $request->kode_matkul,
+        'creator_email'    => $request->creator_email,
+        // url_presentation akan ditangani otomatis oleh model jika judul berubah
+    ]);
 
-        return redirect()->route('tutorials.index')
-                         ->with('success', 'Tutorial berhasil diperbarui.');
-    }
+    return redirect()->route('tutorials.index')
+                     ->with('success', 'Tutorial berhasil diperbarui.');
+}
 
     public function destroy(MasterTutorial $tutorial)
     {

@@ -48,7 +48,7 @@
             <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div>
                     <h1 class="text-2xl font-bold text-white">{{ $tutorial->judul }}</h1>
-                    <p class="text-sm text-gray-400 mt-1 uppercase tracking-widest">Detail Konten Presentasi</p>
+                    <p class="text-sm text-gray-400 mt-1 ">Detail Konten Presentasi</p>
                 </div>
                 <a href="{{ route('tutorials.details.create', $tutorial) }}" 
                    class="bg-gold hover:bg-yellow-600 text-black font-bold px-6 py-2.5 rounded-lg transition shadow-lg">
