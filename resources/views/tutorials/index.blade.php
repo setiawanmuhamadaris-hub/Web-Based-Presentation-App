@@ -75,11 +75,17 @@
                             <td class="px-5 py-3.5 text-slate-500">{{ $tutorial->creator_email }}</td>
                             <td class="px-5 py-3.5">
                                 <div class="flex items-center justify-center gap-2">
+                                    <a href="{{ route('tutorials.details.index', $tutorial->id) }}" 
+                                        class="bg-green-500 text-white px-3 py-1 rounded"
+                                              bg-amber-50 hover:bg-amber-100 px-3 py-1.5 rounded-lg transition">
+                                        Kelola Detail
+                                    </a>
                                     <a href="{{ route('tutorials.edit', $tutorial) }}"
                                        class="text-xs font-semibold text-amber-600 hover:text-amber-800
                                               bg-amber-50 hover:bg-amber-100 px-3 py-1.5 rounded-lg transition">
                                         Edit
                                     </a>
+
                                     <form action="{{ route('tutorials.destroy', $tutorial) }}"
                                           method="POST"
                                           onsubmit="return confirm('Hapus tutorial ini?')">

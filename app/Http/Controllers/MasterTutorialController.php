@@ -14,7 +14,6 @@ class MasterTutorialController extends Controller
             'Authorization' => 'Bearer ' . session('refresh_token'),
         ])->get('https://jwt-auth-eight-neon.vercel.app/getMakul');
 
-        // Tambahkan argumen 'data' pada metode json() untuk mengekstrak array mata kuliah
         return $response->successful() ? ($response->json('data') ?? []) : [];
     }
 
